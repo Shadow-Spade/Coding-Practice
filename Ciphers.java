@@ -1,7 +1,5 @@
 package CoolMath;
 
-import CoolMath.GeneralMath;
-
 public class Ciphers {
     private static final String STANDARD_ALPHA_KEY = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private static final char LOWERCASE = 'a', UPPERCASE = 'A';
@@ -69,7 +67,8 @@ public class Ciphers {
         return caesar(message, 3);
     }
     public static String caesar(String message, char rot) {
-        return caesar(message, ((rot - 'a' < 0) ? (rot - 'A') : (rot - 'a')));
+        if(!isLetter(rot)) return caesar(message, 0);
+        return caesar(message, charToValue(rot));
     }
     public static String rot13(String message){
         return caesar(message, 13);
@@ -111,10 +110,12 @@ public class Ciphers {
         return affine(message, rot, coprime, false);
     }
     public static String affine(String message, char rot, int coprime) {
-        return affine(message, ((rot - 'a' < 0) ? (rot - 'A') : (rot - 'a')), coprime, false);
+        if(!isLetter(rot)) return affine(message, 0, coprime, false);
+        return affine(message, charToValue(rot), coprime, false);
     }
     public static String affine(String message, char rot, int coprime, boolean decrypt) {
-        return affine(message, ((rot - 'a' < 0) ? (rot - 'A') : (rot - 'a')), coprime, decrypt);
+        if(!isLetter(rot)) return affine(message, 0, coprime, decrypt);
+        return affine(message, charToValue(rot), coprime, decrypt);
     }
     public static String affine(String message, int rot, int coprime, boolean decrypt) {
         if(GeneralMath.gcd(coprime,26) != 1){
@@ -152,6 +153,9 @@ public class Ciphers {
     private static char charToLower(char c){
         if(isLower(c)) return c;
         return (char)(c + (LOWERCASE - UPPERCASE));
+    }
+    private static int charToValue(char c){
+        return c - ((isLower(c)) ? (UPPERCASE) : (LOWERCASE));
     }
     private static boolean sbContains(StringBuilder sb, CharSequence c){
         return sb.indexOf(c.toString()) > -1;
